@@ -1,10 +1,6 @@
 module.exports = {
   ignorePatterns: ['build/', 'dist/', 'node_modules/'],
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:prettier/recommended', // Add this line to enable eslint-plugin-prettier and eslint-config-prettier
-  ],
+  extends: ['eslint:recommended', 'plugin:react/recommended'],
   plugins: ['react', 'prettier'],
   settings: {
     react: {
@@ -34,10 +30,8 @@ module.exports = {
         parser: 'babel-ts',
       },
     ],
+    // Customize your rules here
     'react/prop-types': process.env.FAIL_LINT ? 2 : 0,
     'react/jsx-uses-vars': 'warn',
-    // Disable conflicting rules for Prettier
-    'arrow-body-style': 'off',
-    'prefer-arrow-callback': 'off',
   },
 };
