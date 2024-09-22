@@ -11,6 +11,7 @@ on:
 jobs:
   Lint:
     runs-on: ubuntu-latest
+    environment: Development Environment
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -19,17 +20,14 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.8'
-
       - name: Install dependencies
-        run: pip install pylint
-        working-directory: backend
-      - name: Install Dependencies
-        working-directory: starter/backend 
+        working-directory: starter/backend
         run:  |
           python -m pip install --upgrade pip
           pip install pipenv
           pip install flake8
-
+      - name: Run Lint
+        run: cd starter/backend && pipenv run lint
   Test:
     runs-on: ubuntu-latest
     steps:
@@ -45,6 +43,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pipenv
           pip install flake8
+
       - name: Test
         run: cd starter/backend && pipenv install pytest && pipenv run test
 
@@ -54,11 +53,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.8'
 
       - name: Build Docker Image
         run: |
