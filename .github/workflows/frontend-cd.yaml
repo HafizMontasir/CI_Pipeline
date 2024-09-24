@@ -9,7 +9,7 @@ on:
       - 'starter/frontend/**'
 
 env:
-  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+  # ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
   ECR_REPOSITORY: frontend
   IMAGE_TAG: ${{ github.sha }}
 
@@ -66,13 +66,13 @@ jobs:
         working-directory: starter/frontend
         run: npm ci
       - name: Build Docker image
-        run: docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        run: docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG .      
         working-directory: starter/frontend
       - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
       - name: Push Docker image to Amazon ECR
         run: |
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
 
   Deploy:
     runs-on: ubuntu-latest
@@ -85,11 +85,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name your-cluster-name --region ${{ secrets.AWS_REGION }}
+        run: aws eks update-kubeconfig --name ci-pipeline-cluster --region ${{ secrets.AWS_REGION }}
       - name: Deploy to Kubernetes
         run: |
           cd starter/frontend/k8s
-          kustomize edit set image frontend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          kustomize edit set image frontend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
           kustomize build | kubectl apply -f -
 
 
