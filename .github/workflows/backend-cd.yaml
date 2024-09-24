@@ -66,15 +66,15 @@ jobs:
 
       - name: Set up Docker build environment
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG backend/
-        working-directory: backend
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG .
+        working-directory: starter/backend
 
       - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Push Docker image to Amazon ECR
         run: |
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  # Push the image to ECR
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
 
   Deploy:
     runs-on: ubuntu-latest
@@ -88,10 +88,10 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name your-cluster-name --region ${{ secrets.AWS_REGION }}
+        run: aws eks update-kubeconfig --name ${{ vars.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
 
       - name: Deploy to Kubernetes
         run: |
           cd starter/backend/k8s
-          kustomize edit set image backend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  # Update the image in Kubernetes manifests
+          kustomize edit set image backend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
           kustomize build | kubectl apply -f -  # Apply the changes to the Kubernetes cluster
