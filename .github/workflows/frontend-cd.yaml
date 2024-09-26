@@ -11,7 +11,6 @@ on:
 jobs:
   Lint:
     runs-on: ubuntu-latest
-    # environment: Development Environment
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -90,6 +89,10 @@ jobs:
           aws-region: us-east-1
       - name: update kubeconfig
         run: aws eks update-kubeconfig --name cluster --region us-east-1
+        
+      - name: List directory contents for debugging
+        run: ls -R starter/frontend
+
       - name: Deploy to Kubernetes
         run: |
           cd starter/frontend/k8s
