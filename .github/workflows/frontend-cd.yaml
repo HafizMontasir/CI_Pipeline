@@ -83,7 +83,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+        
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -92,12 +92,6 @@ jobs:
           aws-region: us-east-1
       - name: update kubeconfig
         run: aws eks update-kubeconfig --name cluster --region us-east-1
-
-      - name: Print current directory
-        run: pwd
-
-      - name: List all files and directories
-        run: ls -R
 
       - name: Deploy to Kubernetes
         run: |
