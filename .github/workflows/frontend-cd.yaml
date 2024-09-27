@@ -2,7 +2,7 @@ name: Frontend CD
 
 on:
   workflow_dispatch:
-  pull_request:
+  push:
     branches:
       - main
     paths:
@@ -66,8 +66,9 @@ jobs:
       - name: Install Dependencies
         working-directory: starter/frontend
         run: npm ci
+
       - name: Build Docker image
-        run: docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --tag 458978242428.dkr.ecr.us-east-1.amazonaws.com/frontend:latest .      
+        run: docker build --build-arg=REACT_APP_MOVIE_API_URL=http://backend-service-url:5000 --tag 458978242428.dkr.ecr.us-east-1.amazonaws.com/frontend:latest .    
         working-directory: starter/frontend
 
       - name: Login to Amazon ECR
@@ -98,3 +99,6 @@ jobs:
           cd starter/frontend/k8s
           kustomize edit set image frontend=458978242428.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
           kustomize build | kubectl apply -f -
+
+      - name: Print Application URLs
+        run: kubectl get svc -A

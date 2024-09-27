@@ -2,7 +2,7 @@ name: Backend CD
 
 on:
   workflow_dispatch:
-  pull_request:
+  push:
     branches:
       - main
     paths:
@@ -71,7 +71,7 @@ jobs:
 
       - name: Set up Docker build environment
         run: |
-          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --tag 458978242428.dkr.ecr.us-east-1.amazonaws.com/backend:latest .
+          docker build --tag 458978242428.dkr.ecr.us-east-1.amazonaws.com/backend:latest .
         working-directory: starter/backend
 
       - name: Push Docker image to Amazon ECR
@@ -100,3 +100,6 @@ jobs:
           cd starter/backend/k8s
           kustomize edit set image backend=458978242428.dkr.ecr.us-east-1.amazonaws.com/backend:latest
           kustomize build | kubectl apply -f -
+
+      - name: Print Application URLs
+        run: kubectl get svc -A
