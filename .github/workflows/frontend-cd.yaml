@@ -70,7 +70,7 @@ jobs:
       - name: Build Docker image
         env:
           REACT_APP_MOVIE_API_URL: ${{ secrets.REACT_APP_MOVIE_API_URL }}
-        run: docker build --build-arg=REACT_APP_MOVIE_API_URL="http://aaaf83cc336704c7dbe460d5fde31457-1055333095.us-east-1.elb.amazonaws.com" --tag 458978242428.dkr.ecr.us-east-1.amazonaws.com/frontend:latest .
+        run: docker build --build-arg=REACT_APP_MOVIE_API_URL="http://${{REACT_APP_MOVIE_API_URL}}" --tag 458978242428.dkr.ecr.us-east-1.amazonaws.com/frontend:latest .
         working-directory: starter/frontend
 
       - name: Login to Amazon ECR
