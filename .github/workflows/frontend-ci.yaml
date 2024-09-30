@@ -18,6 +18,10 @@ jobs:
 
     - name: Use Node.js 18
       uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+        cache-dependency-path: starter/frontend/package-lock.json
       
     - name: Install Dependencies
       working-directory: starter/frontend
@@ -34,6 +38,10 @@ jobs:
       uses: actions/checkout@v3
     - name: Use Node.js 18
       uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+        cache-dependency-path: starter/frontend/package-lock.json
 
     - name: Install Dependencies
       working-directory: starter/frontend
@@ -51,6 +59,10 @@ jobs:
     
     - name: Use Node.js 18
       uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+        cache-dependency-path: starter/frontend/package-lock.json
 
     - name: Build and Run Docker Image
       run: |

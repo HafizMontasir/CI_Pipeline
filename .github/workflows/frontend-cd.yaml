@@ -68,7 +68,9 @@ jobs:
         run: npm ci
 
       - name: Build Docker image
-        run: docker build --build-arg=REACT_APP_MOVIE_API_URL=http://backend-service-url:5000 --tag 458978242428.dkr.ecr.us-east-1.amazonaws.com/frontend:latest .    
+        env:
+          REACT_APP_MOVIE_API_URL: ${{ secrets.REACT_APP_MOVIE_API_URL }}
+        run: docker build --build-arg=REACT_APP_MOVIE_API_URL="http://$REACT_APP_MOVIE_API_URL/movies" --tag 458978242428.dkr.ecr.us-east-1.amazonaws.com/frontend:latest .
         working-directory: starter/frontend
 
       - name: Login to Amazon ECR
